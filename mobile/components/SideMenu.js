@@ -29,7 +29,7 @@ const SideMenu = ({ navigation }) => {
           </TouchableOpacity> */}
         </View>
         <View style={{marginBottom:'10%', justifyContent:'center', flexDirection:'row', width:'100%',}}>
-          <TouchableOpacity style={styles.sideNavBtn} onPress={navigateToScreen('ProfileScreen')}>
+          <TouchableOpacity style={styles.sideNavBtn} onPress={navigateToScreen('SettingsStackScreen')}>
           <Icon name="settings-outline" size={24} color="white" style={{ marginRight: 16 }} />
             <Text style={styles.sideNavBtnText}>Settings</Text>
           </TouchableOpacity>

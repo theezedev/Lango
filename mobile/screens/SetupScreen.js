@@ -8,6 +8,8 @@ import AppContext from '../AppContext';
 import AppLanguages from '../AppLanguages';
 import DropDownSelection from '../components/DropdownSelection';
 import uuid from 'react-native-uuid';
+import generateDefaultCategories from '../DefaultAppCategories'; // Import the function
+
 
 const gloStyles = require('../gloStyles'); //Global Styles
 
@@ -34,44 +36,12 @@ const SetupScreen = ({ updateDataExistsState }) => {
         const appData = {
             appInfo: {
                 appLanguage: appLanguage,
-                appCategories:[
-                    {categoryID: uuid.v4(), category: 'Greetings'},
-                    {categoryID: uuid.v4(), category: 'Directional'},
-                    {categoryID: uuid.v4(), category: 'Slang'},
-                    {categoryID: uuid.v4(), category: 'Misc'},
-                ]
+                appCategories: generateDefaultCategories(appLanguage)
             },
             userLanguages: {
                 [selectedLanguage]: { default: 1, 
-                    phrases: [
-                        {phraseID: uuid.v4(), originalPhrase: 'Test Original', translatedPhrase: 'This is translated', isFavorite: 0, categoryID: ''},
-                        {phraseID: uuid.v4(), originalPhrase: 'Test Original 2', translatedPhrase: 'This is translated 2', isFavorite: 1, categoryID: ''}
-                    ], 
-                    numbers: [
-                        { originalNumber: 0, translatedNumber: '' },
-                        { originalNumber: 1, translatedNumber: '' },
-                        { originalNumber: 2, translatedNumber: '' },
-                        { originalNumber: 3, translatedNumber: '' },
-                        { originalNumber: 4, translatedNumber: '' },
-                        { originalNumber: 5, translatedNumber: '' },
-                        { originalNumber: 6, translatedNumber: '' },
-                        { originalNumber: 7, translatedNumber: '' },
-                        { originalNumber: 8, translatedNumber: '' },
-                        { originalNumber: 9, translatedNumber: '' },
-                        { originalNumber: 10, translatedNumber: '' },
-                        { originalNumber: 20, translatedNumber: '' },
-                        { originalNumber: 30, translatedNumber: '' },
-                        { originalNumber: 40, translatedNumber: '' },
-                        { originalNumber: 50, translatedNumber: '' },
-                        { originalNumber: 60, translatedNumber: '' },
-                        { originalNumber: 70, translatedNumber: '' },
-                        { originalNumber: 80, translatedNumber: '' },
-                        { originalNumber: 90, translatedNumber: '' },
-                        { originalNumber: 100, translatedNumber: '' },
-                        { originalNumber: 1000, translatedNumber: '' },
-                        { originalNumber: 100000000, translatedNumber: '' },
-                        { originalNumber: 100000000000, translatedNumber: '' },
-                    ]},
+                    phrases: [], 
+                },
             },
         };
 

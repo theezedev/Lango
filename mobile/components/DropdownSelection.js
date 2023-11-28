@@ -15,7 +15,6 @@ export default function DropDownSelection({ selectedValue, label, options, label
       <DropDownPicker
         open={open}
         value={value}
-        // items={items}
         items={options}
         setOpen={setOpen}
         setValue={setValue}
@@ -26,7 +25,7 @@ export default function DropDownSelection({ selectedValue, label, options, label
         mode="BADGE"
         listMode="SCROLLVIEW"
         badgeDotColors={["#e76f51", "#00b4d8", "#e9c46a", "#e76f51", "#8ac926", "#00b4d8", "#e9c46a"]}
-        style={{minHeight: 40, }}
+        style={[{minHeight: 40, borderWidth: 1, borderColor: '#ccc',}]}
         containerStyle={containerStyle}
         dropDownDirection={dropDirection}
         zIndex={1000}

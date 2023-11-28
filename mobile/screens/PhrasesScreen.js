@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, FlatList, Text, Modal, TextInput, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, FlatList, Text, Modal, TextInput, TouchableOpacity, Button, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/Ionicons'; 
-// import DropDownPicker from 'react-native-dropdown-picker';
 import DropDownSelection from '../components/DropdownSelection';
+import { ScrollView, Swipeable } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 import AppContext from '../AppContext';
 const gloStyles = require('../gloStyles'); //Global Styles
 import uuid from 'react-native-uuid';
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 const PhrasesScreen = ({ }) => {
@@ -25,10 +25,13 @@ const PhrasesScreen = ({ }) => {
     const [originalPhrase, setOriginalPhrase] = useState('');
     const [translatedPhrase, setTranslatedPhrase] = useState('');
     const [phraseID, setPhraseID] = useState('');
+    const [isFavorite, setIsFavorite] = useState(false);
+
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
-
+    let row: Array<any> = [];
+    let prevOpenedRow;
 
 
     useEffect(() => {
@@ -40,7 +43,22 @@ const PhrasesScreen = ({ }) => {
                     const phrases = data?.userLanguages?.[selectedLanguage]?.phrases || [];
                     const cats = data?.appInfo.appCategories || [];
 
-                    setPhrasesData(phrases);
+                    // phrases.sort((a, b) => {
+                    //     if (a.isFavorite === b.isFavorite) {
+                    //         if (a.isFavorite) return 0; // Keep isFavorite === true at the beginning
+                    //         else {
+                    //             // Sort by categoryID for isFavorite === false
+                    //             if (a.categoryID < b.categoryID) return -1;
+                    //             if (a.categoryID > b.categoryID) return 1;
+                    //             return 0;
+                    //         }
+                    //     } else {
+                    //         return a.isFavorite ? -1 : 1;
+                    //     }
+                    // });
+
+               
+                    setPhrasesData(organizePhrases(phrases));
                     const formattedCategories = cats.map(category => ({
                         label: category.category,
                         value: category.categoryID
@@ -57,33 +75,113 @@ const PhrasesScreen = ({ }) => {
         fetchData();
     }, []);
 
+    useFocusEffect(
+        React.useCallback(() => {
+          const fetchData = async () => {
+            try {
+              const jsonValue = await AsyncStorage.getItem('appData');
+              if (jsonValue !== null) {
+                const data = JSON.parse(jsonValue);
+                const phrases = data?.userLanguages?.[selectedLanguage]?.phrases || [];
+                const cats = data?.appInfo.appCategories || [];
+      
+                setPhrasesData(organizePhrases(phrases));
+                const formattedCategories = cats.map(category => ({
+                  label: category.category,
+                  value: category.categoryID
+                }));
+      
+                setCategories(formattedCategories);
+              }
+            } catch (error) {
+              console.error('Error retrieving data from AsyncStorage:', error);
+            }
+          };
+      
+          fetchData();
+        }, [selectedLanguage]) // Add dependencies to watch for changes
+    );
+      
+
     const filteredPhrases = phrasesData.filter(
         phrase =>
         phrase.originalPhrase.toLowerCase().includes(searchText.toLowerCase()) ||
         phrase.translatedPhrase.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const renderPhrase = ({ item }) => {
+    const renderPhrase = ({ item, index }, onClick) => {
         const matchedCategory = categories.find(category => category.value === item.categoryID);
-        const categoryName = matchedCategory ? matchedCategory.label : '';
-      
+
+        const closeRow = (index) => {
+            if (prevOpenedRow && prevOpenedRow !== row[index]) {
+              prevOpenedRow.close();
+            }
+            prevOpenedRow = row[index];
+        };
+    
+        const renderRightActions = (progress, dragX, onClick) => {
         return (
-          <TouchableOpacity onPress={() => handlePhrasePress(item)}>
-            <Text style={{ margin: 3, fontWeight: 'bold' }}>{categoryName}</Text>
-            <View style={styles.phraseContainer}>
-              <Text style={styles.originalPhrase}>{item.originalPhrase}</Text>
-              <Text style={styles.translatedPhrase}>{item.translatedPhrase}</Text>
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => deletePhrase(item.phraseID)}
+                style={{
+                width: 70,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'red',
+                }}
+            >
+                <Text style={{ color: 'white' }}>DELETE</Text>
+            </TouchableOpacity>
         );
-      };
+        };
+    
+        return (
+        <Swipeable
+            renderRightActions={(progress, dragX) =>
+            renderRightActions(progress, dragX, onClick)
+            }
+            onSwipeableOpen={() => closeRow(index)}
+            ref={(ref) => (row[index] = ref)}
+            rightOpenValue={-100}
+        >
+            <TouchableOpacity onPress={() => handlePhrasePress(item)}>
+                <View style={styles.phraseContainer}>
+                    <Text style={styles.originalPhrase}>
+                        {item.isFavorite === true ? (
+                    <Icon name="star" size={15} fill={'red'} color={'gold'} style={{marginRight:5}} />
+                        ) : null} 
+                    {item.originalPhrase}
+                    </Text>
+                    <Text style={styles.translatedPhrase}>{item.translatedPhrase}</Text>
+                </View>
+            </TouchableOpacity>
+        </Swipeable>
+        );
+    };
+
+    function organizePhrases(phrases) {
+        return phrases.sort((a, b) => {
+            if (a.isFavorite === b.isFavorite) {
+                if (a.isFavorite) return 0; // Keep isFavorite === true at the beginning
+                else {
+                    // Sort by categoryID for isFavorite === false
+                    if (a.categoryID < b.categoryID) return -1;
+                    if (a.categoryID > b.categoryID) return 1;
+                    return 0;
+                }
+            } else {
+                return a.isFavorite ? -1 : 1;
+            }
+        });
+    }
 
     const handlePhrasePress = phrase => {
         setOriginalPhrase(phrase?.originalPhrase)
         setTranslatedPhrase(phrase?.translatedPhrase)
         setPhraseID(phrase?.phraseID)
         setSelectedCategory(phrase?.categoryID)
-
+        
+        setIsFavorite(phrase?.isFavorite)
         setIsNew(false);
         setModalVisible(true);
     };
@@ -93,7 +191,8 @@ const PhrasesScreen = ({ }) => {
         setTranslatedPhrase('')
         setPhraseID('')
         setSelectedCategory('')
-
+        
+        setIsFavorite(false)
         setIsNew(true);
         setModalVisible(true);
     };
@@ -104,6 +203,7 @@ const PhrasesScreen = ({ }) => {
         setPhraseID('')
         setSelectedCategory('')
 
+        setIsFavorite(false)
         setIsNew(false);
         setModalVisible(false);
     };
@@ -132,6 +232,7 @@ const PhrasesScreen = ({ }) => {
           originalPhrase: originalPhrase,
           translatedPhrase: translatedPhrase,
           categoryID: selectedCategory,
+          isFavorite: isFavorite,
         };
       
         try {
@@ -152,7 +253,7 @@ const PhrasesScreen = ({ }) => {
               setModalVisible(false);
       
               const phrases = updatedPhrases || [];
-              setPhrasesData(phrases); 
+              setPhrasesData(organizePhrases(phrases)); 
             }
           }
         } catch (error) {
@@ -172,7 +273,8 @@ const PhrasesScreen = ({ }) => {
                         ...phrase,
                         originalPhrase: originalPhrase,
                         translatedPhrase: translatedPhrase,
-                        categoryID: selectedCategory
+                        categoryID: selectedCategory,
+                        isFavorite: isFavorite
                     };
                 }
                     return phrase;
@@ -186,7 +288,8 @@ const PhrasesScreen = ({ }) => {
                     setModalVisible(false);
                     
                     const phrases = updatedPhrases || [];
-                    setPhrasesData(phrases);
+                    setPhrasesData(organizePhrases(phrases));
+                    // console.log(updatedPhrases);
                 }
             }
         } catch (error) {
@@ -194,7 +297,8 @@ const PhrasesScreen = ({ }) => {
         }
     };
 
-    const deletePhrase = async () => {
+    const deletePhrase = async (phraseIDToDelete) => {
+        console.log('deleting: '+ phraseIDToDelete)
         try {
           const shouldDelete = await new Promise((resolve) => {
             Alert.alert(
@@ -220,7 +324,7 @@ const PhrasesScreen = ({ }) => {
       
               if (selectedLanguageData) {
                 const updatedPhrases = selectedLanguageData.phrases.filter(
-                  (phrase) => phrase.phraseID !== phraseID
+                  (phrase) => phrase.phraseID !== phraseIDToDelete
                 );
       
                 data.userLanguages[selectedLanguage].phrases = updatedPhrases;
@@ -241,7 +345,19 @@ const PhrasesScreen = ({ }) => {
       
     return (
         <View style={{flex:1, padding:'3%',}}>
-            <View style={{flexDirection:'row-reverse',}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center',}}>
+                <View style={{ flex:1}}>
+                    {/* <DropDownSelection
+                        selectedValue={'Favorites'}
+                        label="Select a vategory"
+                        options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
+                        labelVisible={false}
+                        onChange={(text) => setSelectedCategory(text)}
+                        style={{borderRadius: 8, borderWidth: 1, borderColor: '#ccc', backgroundColor: '#ffffff',}}       
+                        containerStyle={{ alignItems:'center', flexDirection:'column', justifyContent:'center', }}
+                    /> */}
+                </View>
+                
                 <TouchableOpacity style={[gloStyles.btnPrimary, {flexDirection:'row', minWidth:90, margin:10,}]} onPress={handleAddPress}>
                     <Icon name="add" size={20} color={'#fff'} />
                     <Text style={{fontSize:15,color:'#fff',padding:5,}}>{t('Add')}</Text>
@@ -268,11 +384,11 @@ const PhrasesScreen = ({ }) => {
                             <View style={{}}>
                                 <View style={{justifyContent:'space-between', flexDirection:'row', marginBottom:10,}}>
                                     <View>
-                                        {!isNew && (
+                                        {/* {!isNew && (
                                             <TouchableOpacity onPress={() => deletePhrase()}>
                                                 <Icon name="trash" size={30} color={'red'} />
                                             </TouchableOpacity>
-                                        )}
+                                        )} */}
                                     </View>
                                     
                                     <TouchableOpacity onPress={closeModal}>
@@ -280,17 +396,21 @@ const PhrasesScreen = ({ }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{flexDirection:'column',justifyContent:'space-between'}}>
-                                    <View style={{marginBottom:10, backgroundColor:'transparent', marginTop:15, zIndex: 10001,}}>
-                                        <Text style={[styles.label, {marginBottom:10,}]}>{t('Category')}:</Text>
-                                        <DropDownSelection
-                                            selectedValue={selectedCategory}
-                                            label="Select a vategory"
-                                            options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
-                                            labelVisible={false}
-                                            onChange={(text) => setSelectedCategory(text)}
-                                            style={{borderRadius: 8, borderWidth: 1, borderColor: '#ccc', backgroundColor: '#ffffff', paddingHorizontal:10, }}       
-                                            containerStyle={{}}                                     
-                                        />
+                                    <View style={{marginBottom:10, backgroundColor:'transparent', marginTop:15, zIndex: 10001, paddingHorizontal:10, flexDirection:'row',}}>
+                                        <View style={{flex:1, marginRight:10,}}>
+                                            <Text style={[styles.label, {marginBottom:10,}]}>{t('Category')}:</Text>
+                                            <DropDownSelection
+                                                selectedValue={categories.find(cat => cat.label === t('Other'))?.value}
+                                                label="Select a category"
+                                                options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
+                                                labelVisible={false}
+                                                onChange={(text) => setSelectedCategory(text)}
+                                                containerStyle={{ }}                                     
+                                            />
+                                        </View>
+                                        <TouchableOpacity style={{flexDirection:'column-reverse', justifyContent:'center', alignItems: 'center', marginTop:10, }} onPress={() => {setIsFavorite(!isFavorite);}}>
+                                            <Icon name="star" size={25} fill={'red'} color={isFavorite ? 'gold' : 'grey'}/>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{marginBottom:10, backgroundColor:'transparent'}}>
                                         <Text style={styles.label}>{t('Original')}:</Text>

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "languey",
-    "slug": "languey",
+    "name": "Lango",
+    "slug": "lango",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,6 +31,6 @@
         "projectId": "4803ba71-7222-425f-91a8-df0d12bb73a5"
       }
     },
-    "owner": "languey"
+    "owner": "lango"
   }
 }

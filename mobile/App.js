@@ -7,7 +7,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PaperProvider } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ActivityIndicator, View, Platform } from 'react-native';
@@ -20,6 +19,7 @@ import AppContext from './AppContext';
 import SetupScreen from './screens/SetupScreen';
 import MainNavScreen from './screens/MainNavScreen';
 import SideMenu from './components/SideMenu';
+import SettingsStackNavigator from './screens/SettingsStackScreen';
 
 const Drawer = createDrawerNavigator();
 const gloStyles = require('./gloStyles'); //Global Styles
@@ -82,75 +82,100 @@ export default function App() {
     setIsDataExists(value);
   };
 
-  // const deleteAppData = async () => {
-  //   try {
-  //     await AsyncStorage.removeItem('appData');
-  //     setIsDataExists(false); // Reset state to indicate data deletion
-  //     console.log('appData deleted successfully.');
-  //   } catch (error) {
-  //     console.error('Error deleting appData:', error);
-  //   }
-  // };
+  const deleteAppData = async () => {
+    try {
+      await AsyncStorage.removeItem('appData');
+      setIsDataExists(false); // Reset state to indicate data deletion
+      console.log('appData deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting appData:', error);
+    }
+  };
 
   // deleteAppData();
 
   return (
-    // <PaperProvider>
-      <AppContext.Provider value={{ appLanguage, setAppLanguage, selectedLanguage, setSelectedLanguage}}>
-        <NavigationContainer>
-          <SafeAreaView style={gloStyles.mainContainer}>
-            {isDataExists ? (
-              selectedLanguage ? (
-                <Drawer.Navigator drawerContent={(props) => <SideMenu {...props} />} >
-                  <Drawer.Screen
-                    name="MainNavScreen"
-                    component={MainNavScreen}
-                    options={({ navigation }) => ({
-                      title: 'Languey',
-                      headerStyle: {
-                        backgroundColor: '#1c4568',
-                        borderBottomWidth: 3,
-                        borderBottomColor: '#1c4568',
-                      },
-                      headerTintColor: '#fff',
-                      headerTitleStyle: {
-                        fontWeight: 'bold',
-                      },
-                      // headerRight: () => (
-                      //   <Icon
-                      //     name="language"
-                      //     size={24}
-                      //     color="white"
-                      //     style={{ marginRight: 16 }}
-                      //     onPress={() => {
-                      //       // Define your onPress action here
-                      //     }}
-                      //   />
-                      // ),
-                    })}
-                    initialParams={{ selectedLanguage }}
-                  />
-                </Drawer.Navigator>
-              ) : (
-                <View style={{flex:1, justifyContent:'center', alignItems:'center',}}>
-                  <ActivityIndicator size="large" color={'#1c4568'}/>
-                </View>
-              )
+    <AppContext.Provider value={{ appLanguage, setAppLanguage, selectedLanguage, setSelectedLanguage}}>
+      <NavigationContainer>
+        <SafeAreaView style={gloStyles.mainContainer}>
+          {isDataExists ? (
+            selectedLanguage ? (
+              <Drawer.Navigator drawerContent={(props) => <SideMenu {...props} />} >
+                <Drawer.Screen
+                  name="MainNavScreen"
+                  component={MainNavScreen}
+                  options={({ navigation }) => ({
+                    title: 'Lango',
+                    headerStyle: {
+                      backgroundColor: '#1c4568',
+                      borderBottomWidth: 3,
+                      borderBottomColor: '#1c4568',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                    },
+                    // headerRight: () => (
+                    //   <Icon
+                    //     name="language"
+                    //     size={24}
+                    //     color="white"
+                    //     style={{ marginRight: 16 }}
+                    //     onPress={() => {
+                    //       // Define your onPress action here
+                    //     }}
+                    //   />
+                    // ),
+                  })}
+                  initialParams={{ selectedLanguage }}
+                />
+                <Drawer.Screen
+                  name="SettingsStackScreen"
+                  component={SettingsStackNavigator}
+                  options={({ navigation }) => ({
+                    title: 'Lango',
+                    headerStyle: {
+                      backgroundColor: '#1c4568',
+                      borderBottomWidth: 3,
+                      borderBottomColor: '#1c4568',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                    },
+                    // headerRight: () => (
+                    //   <Icon
+                    //     name="language"
+                    //     size={24}
+                    //     color="white"
+                    //     style={{ marginRight: 16 }}
+                    //     onPress={() => {
+                    //       // Define your onPress action here
+                    //     }}
+                    //   />
+                    // ),
+                  })}
+                  initialParams={{ selectedLanguage }}
+                />
+              </Drawer.Navigator>
             ) : (
-              <SetupScreen updateDataExistsState={updateDataExistsState} />
-            )}
-            {
-              Platform.OS === 'ios' ? (
-                <StatusBar style="light" />
-              ) : (
-                <StatusBar style="auto" />
-              )
-            }        
-          </SafeAreaView>
-        </NavigationContainer>
-      </AppContext.Provider>
-    // </PaperProvider>
-
+              <View style={{flex:1, justifyContent:'center', alignItems:'center',}}>
+                <ActivityIndicator size="large" color={'#1c4568'}/>
+              </View>
+            )
+          ) : (
+            <SetupScreen updateDataExistsState={updateDataExistsState} />
+          )}
+          {
+            Platform.OS === 'ios' ? (
+              <StatusBar style="light" />
+            ) : (
+              <StatusBar style="auto" />
+            )
+          }        
+        </SafeAreaView>
+      </NavigationContainer>
+    </AppContext.Provider>
   );
   
 }
