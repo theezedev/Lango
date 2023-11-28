@@ -30,7 +30,7 @@ const PhrasesScreen = ({ }) => {
 
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    let row: Array<any> = [];
+    let row = [];
     let prevOpenedRow;
 
 
@@ -392,7 +392,7 @@ const PhrasesScreen = ({ }) => {
                                     </View>
                                     
                                     <TouchableOpacity onPress={closeModal}>
-                                        <Icon name="close" size={30} color={'#1c4568'} />
+                                        <Icon name="close" size={30} color={'#47a81a'} />
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{flexDirection:'column',justifyContent:'space-between'}}>
@@ -422,7 +422,7 @@ const PhrasesScreen = ({ }) => {
                                     </View>
                                     <ScrollView style={{marginBottom:10,}}>
                                         <Text style={styles.label}>{t('SuggestedTranslation')}:</Text>
-                                        <Text style={{marginLeft:10}}>coming soon</Text>
+                                        <Text style={{marginLeft:10}}>{t('ComingSoon')}</Text>
                                     </ScrollView>
                                 </View>
                             </View>

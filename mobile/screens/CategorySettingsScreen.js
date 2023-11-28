@@ -18,7 +18,7 @@ const CategorySettingsScreen = () => {
   const [appCategories, setAppCategories] = useState('');
   const [categoryToAdd, setCategoryToAdd] = useState('');
 
-  let row: Array<any> = [];
+  let row = [];
   let prevOpenedRow;
 
   useEffect(() => {
@@ -221,7 +221,7 @@ const CategorySettingsScreen = () => {
           <View style={{width:'80%', height:'60%', backgroundColor: 'white', padding: 20, borderRadius: 10,justifyContent:'space-between', }}>
             <View style={{flexDirection:'row-reverse', marginBottom:10,}}>
               <TouchableOpacity onPress={closeModal}>
-                  <Icon name="close" size={30} color={'#1c4568'} />
+                  <Icon name="close" size={30} color={'#47a81a'} />
               </TouchableOpacity>
             </View>
             <View>
@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: '#CCCCCC',
+      // backgroundColor:'#47a81a'
   },
 });
 

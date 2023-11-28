@@ -2,10 +2,10 @@ import React from 'react';
 
 // Create a context with default values
 const AppContext = React.createContext({
-  appLanguage: 'en',
+  appLanguage: '',
   setAppLanguage: () => {},
 
-  selectedLanguage: 'en',
+  selectedLanguage: '',
   setSelectedLanguage: () => {},
 });
 

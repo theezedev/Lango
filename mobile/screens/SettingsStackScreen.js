@@ -2,9 +2,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity, ScrollView, Text, StyleSheet } from 'react-native';
-import GeneralSettingsScreen from './GeneralSettingsScreen';
-// import PrivacySettingsScreen from './PrivacySettingsScreen';
-// import AccountSettingsScreen from './AccountSettingsScreen';
 import CategorySettingsScreen from './CategorySettingsScreen';
 
 import Icon from 'react-native-vector-icons/Ionicons'; 
@@ -16,8 +13,8 @@ const SettingsStack = ({ navigation }) => {
   return (
     <ScrollView>
       <TouchableOpacity style={styles.buttonSettings} onPress={() => navigation.navigate('Category Settings')}>
-        <Text>Categories Settings</Text>
-        <Icon name="arrow-forward-outline" size={24} color="gold" style={{}} />
+        <Text style={styles.textSettings}>Categories Settings</Text>
+        <Icon name="arrow-forward-outline" size={24} color="#fff" style={{}} />
       </TouchableOpacity>
 
       {/* <TouchableOpacity style={styles.buttonSettings} onPress={() => navigation.navigate('PrivacySettings')}>
@@ -46,18 +43,22 @@ const SettingsStackNavigator = () => {
 
 const styles = StyleSheet.create({
     buttonSettings: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        // borderBottomWidth: 1,
-        // borderBottomColor: '#CCCCCC',
-        backgroundColor:'#fff',
-        borderRadius:10,
-        borderWidth:2,
-        borderColor:'#1c4568',
-        margin:10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      // borderBottomWidth: 1,
+      // borderBottomColor: '#CCCCCC',
+      backgroundColor:'#47a81a',
+      borderRadius:10,
+      borderWidth:2,
+      borderColor:'#47a81a',
+      margin:10,
+      
+    },
+    textSettings:{
+      color:'#fff'
     },
 });
 

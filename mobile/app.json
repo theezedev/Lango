@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.theezedev.lango"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,9 +29,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "4803ba71-7222-425f-91a8-df0d12bb73a5"
+        "projectId": "0419d8fa-cee2-4ad6-ba20-e0c380807192"
       }
     },
-    "owner": "lango"
+    "owner": "theezedev"
   }
 }

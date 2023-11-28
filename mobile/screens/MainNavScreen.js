@@ -35,9 +35,9 @@ const MainNavScreen = ({ route }) => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#fff', 
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: '#b3b3b3',
         tabBarStyle: {
-          backgroundColor: '#1c4568',
+          backgroundColor: '#47a81a',
           borderTopWidth: 0,
           borderRadius: 15, 
           marginHorizontal: 10, 

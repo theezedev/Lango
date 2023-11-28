@@ -3,12 +3,14 @@
   "chooseSecondaryLanguage": "Varsayılan ikincil dilinizi girin",
   "getStarted": "Başlamak!",
   "Add": "Aklemek",
-  "Original": "Original",
-  "Translated": "Translated",
+  "Original": "Orijinal",
+  "Translated": "Çevrildi",
   "Next Phrase": "Sonraki İfade",
   "SuggestedTranslation": "Önerilen Çeviri",
   "Category": "Kategori",
-  "Other": "Diğer"
-
+  "Other": "Diğer",
+  "Settings": "Ayarlar",
+  "AddSome": "Flash kartları kullanmak için bazı ifadeler ekleyin.",
+  "ComingSoon": "Yakında gelecek..."
 }
   

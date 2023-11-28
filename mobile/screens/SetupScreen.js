@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -59,22 +59,22 @@ const SetupScreen = ({ updateDataExistsState }) => {
     };
 
     return (
-        <View style={[gloStyles.screenContainer, ]}>
-            <View style={{flex:1, flexDirection:'column', justifyContent:'space-between', padding:'5%',maxHeight:600}}>
+        <View style={{flex:1, }}>
+            <View style={{ flex:1,padding:'3%',}}>
                 <View style={{flex:0, backgroundColor:'transparent', justifyContent:'center', alignItems:'center'}}>
                     <Image
-                        style={{width:200,height:200,}}
+                        style={{width:300,height:300,}}
                         source={require('../assets/icon.png')}
                         resizeMode="contain"
                     />
                 </View>
-                <View style={{flex:0,justifyContent:'space-between',}}>
+                <View style={{flex:1,flexDirection:'column', justifyContent:'flex-start', backgroundColor:'transparent',}}>
                     <View style={[styles.inputRow, {zIndex: 10000}]}>
                         <View style={styles.textRow}>
                             <Text style={styles.inputLabel}>{t('choosePrimaryLanguage')}:</Text>
-                            <TouchableOpacity onPress={() => showTooltip("This is whatever you want the app language to be. Currently it does nothing. Maybe in the future i'll use this.")}>
+                            {/* <TouchableOpacity onPress={() => showTooltip("This is whatever you want the app language to be. Currently it does nothing. Maybe in the future i'll use this.")}>
                                 <Icon name="information-circle-outline" size={15} color="grey" />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         <DropDownSelection
                             selectedValue={appLanguage}
@@ -89,9 +89,9 @@ const SetupScreen = ({ updateDataExistsState }) => {
                     <View style={[styles.inputRow, {zIndex: 10001}]}>
                         <View style={styles.textRow}>
                             <Text style={styles.inputLabel}>{t('chooseSecondaryLanguage')}:</Text>
-                            <TouchableOpacity onPress={() => showTooltip("This is the language that will display by default when opening the app.")}>
+                            {/* <TouchableOpacity onPress={() => showTooltip("This is the language that will display by default when opening the app.")}>
                                 <Icon name="information-circle-outline" size={15} color="grey" />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         <DropDownSelection
                             selectedValue={selectedLanguage}
@@ -102,13 +102,18 @@ const SetupScreen = ({ updateDataExistsState }) => {
                             dropDirection={'TOP'}
                         />
                     </View>
-                </View>
-                <View style={{flex:0, flexDirection:'column-reverse',}}>
-                    <TouchableOpacity onPress={saveUserData} style={gloStyles.btnPrimary}>
-                        <Text style={gloStyles.txtWhite}>{t('getStarted')}</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection:'column-reverse', marginTop:10,}}>
+                        <TouchableOpacity onPress={saveUserData} style={gloStyles.btnPrimary}>
+                            <Text style={gloStyles.txtWhite}>{t('getStarted')}</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
+            <ImageBackground
+                source={require('../assets/half-globe_animation.gif')}
+                style={styles.backgroundImage}
+                resizeMode="cover"
+            />
         </View>
     );
 };
@@ -120,6 +125,7 @@ const SetupScreen = ({ updateDataExistsState }) => {
             backgroundColor: '#fff',
             alignItems: 'center',
             justifyContent: 'center',
+            // backgroundColor:'red',
         },
         inputRow:{
 
@@ -141,6 +147,15 @@ const SetupScreen = ({ updateDataExistsState }) => {
             backgroundColor: '#ffffff',
             marginBottom: 10,
         },
+        backgroundImage: {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 200, // Set the desired height
+            zIndex: -1000,
+        },
+
     });
   
 

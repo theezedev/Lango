@@ -3,19 +3,11 @@ import { StyleSheet, Platform } from 'react-native';
 
 module.exports = StyleSheet.create({
   mainContainer:{
-      flex:1 ,
-      // paddingBottom:'8%',
-      // paddingLeft:'5%',
-      // paddingRight:'5%',
-      // paddingTop:'8%',
+    flex:1 ,
   },
   screenContainer:{
     flex:1 ,
-    width:'100%',
-    // paddingBottom:'5%',
-    paddingLeft:'2%',
-    paddingRight:'2%',
-    // paddingTop:'8%',
+    paddingHorizontal:'2%',
   },
   formControl: {
     height: 40,
@@ -26,11 +18,11 @@ module.exports = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   bgPrimary:{
-    backgroundColor:'#1c4568',
+    backgroundColor:'#47a81a',
     color:'#fff',
   },
   btnPrimary:{
-      backgroundColor:'#1c4568',
+      backgroundColor:'#47a81a',
       color:'#fff',
       padding:10,
       justifyContent:'center',

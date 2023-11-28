@@ -1,4 +1,4 @@
-// Import required polyfill before i18next initialization
+import 'react-native-gesture-handler';
 import 'intl-pluralrules';
 
 import { StatusBar } from 'expo-status-bar';
@@ -37,7 +37,7 @@ if (!i18n.isInitialized) {
         },
       },
       fallbackLng: 'en',
-      debug: true,
+      debug: false,
       interpolation: {
         escapeValue: false,
       },
@@ -107,9 +107,9 @@ export default function App() {
                   options={({ navigation }) => ({
                     title: 'Lango',
                     headerStyle: {
-                      backgroundColor: '#1c4568',
+                      backgroundColor: '#47a81a',
                       borderBottomWidth: 3,
-                      borderBottomColor: '#1c4568',
+                      borderBottomColor: '#47a81a',
                     },
                     headerTintColor: '#fff',
                     headerTitleStyle: {
@@ -135,9 +135,9 @@ export default function App() {
                   options={({ navigation }) => ({
                     title: 'Lango',
                     headerStyle: {
-                      backgroundColor: '#1c4568',
+                      backgroundColor: '#47a81a',
                       borderBottomWidth: 3,
-                      borderBottomColor: '#1c4568',
+                      borderBottomColor: '#47a81a',
                     },
                     headerTintColor: '#fff',
                     headerTitleStyle: {
@@ -160,7 +160,7 @@ export default function App() {
               </Drawer.Navigator>
             ) : (
               <View style={{flex:1, justifyContent:'center', alignItems:'center',}}>
-                <ActivityIndicator size="large" color={'#1c4568'}/>
+                <ActivityIndicator size="large" color={'#47a81a'}/>
               </View>
             )
           ) : (

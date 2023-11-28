@@ -20,7 +20,6 @@ const FlashCardScreen = () => {
   const [phrasesData, setPhrasesData] = useState([]);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const spin = useSharedValue(0);
-//   const [isFrontShown, setIsFrontShown] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,17 +99,25 @@ const FlashCardScreen = () => {
   return (
 
     <View style={styles.container}>
+      {phrasesData.length === 0 ? (
+        <View style={styles.emptyPhrasesContainer}>
+          <Text>{t('AddSome')}</Text>
+        </View>
+      ) : (
+      <View style={styles.container}>
         <TouchableOpacity style={{width:'100%',alignItems:'center', justifyContent:'center',}} onPress={() => (spin.value = spin.value ? 0 : 1)}>
-            <Animated.View style={[styles.front, rStyle]}>
-                <Text style={{fontSize:20}}>{currentPhrase?.originalPhrase}</Text>
-            </Animated.View>
-            <Animated.View style={[styles.back, bStyle]}>
-                <Text style={{fontSize:20}}>{currentPhrase?.translatedPhrase}</Text>
-            </Animated.View>
+          <Animated.View style={[styles.front, rStyle]}>
+              <Text style={{fontSize:20}}>{currentPhrase?.originalPhrase}</Text>
+          </Animated.View>
+          <Animated.View style={[styles.back, bStyle]}>
+              <Text style={{fontSize:20}}>{currentPhrase?.translatedPhrase}</Text>
+          </Animated.View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleNextPhrase} style={styles.nextButton}>
+          <Text style={styles.buttonText}>{t('Next Phrase')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleNextPhrase} style={styles.nextButton}>
-        <Text style={styles.buttonText}>{t('Next Phrase')}</Text>
-        </TouchableOpacity>
+      </View>
+      )}
     </View>
   );
 };
@@ -132,28 +139,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth:3,
     borderColor:'#1c4568',
-    // elevation:10,
  },
- back: {
-    // height: 400,
-    // width: 250,
-    height: '65%',
-    width: '90%',
-    backgroundColor: "#FFFDD0",
-    borderRadius: 16,
-    backfaceVisibility: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth:3,
-    borderColor:'#1c4568',
-    // elevation:10,
-
- },
+  back: {
+      height: '65%',
+      width: '90%',
+      backgroundColor: "#FFFDD0",
+      borderRadius: 16,
+      backfaceVisibility: "hidden",
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth:3,
+      borderColor:'#1c4568',
+  },
   nextButton: {
     marginTop: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#1c4568',
+    backgroundColor: '#47a81a',
     borderRadius: 5,
   },
   buttonText: {
