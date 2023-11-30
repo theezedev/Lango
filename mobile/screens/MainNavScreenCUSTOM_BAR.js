@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PhrasesScreen from './PhrasesScreen';
 import FlashCardScreen from './FlashCardScreen';
 // import SettingsScreen from './SettingsScreen';
-import SettingsStackNavigator from './SettingsStackScreen';
 
 const gloStyles = require('../gloStyles'); //Global Styles
 
@@ -22,16 +21,16 @@ const MainNavScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{ flex: 1 }}>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: '#fff',
           tabBarInactiveTintColor: '#b3b3b3',
           tabBarStyle: {
-            backgroundColor: 'transparent',
+            backgroundColor: '#47a81a',
             borderTopWidth: 0,
-            // paddingBottom: 5,
+            paddingBottom: 5,
           },
         }}
         tabBar={({ state, navigation }) => (
@@ -43,54 +42,66 @@ const MainNavScreen = () => {
               <TouchableOpacity onPress={() => navigation.navigate('FlashCards')} style={{ flex: 1, alignItems: 'center' }} >
                 <Icon name="albums" size={30} color={state.index === 1 ? '#fff' : '#b3b3b3'} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('SettingsStack')} style={{ flex: 1, alignItems: 'center' }}>
-                <Icon name="settings-sharp" size={30} color={state.index === 2 ? '#fff' : '#b3b3b3'} />
+              <TouchableOpacity onPress={toggleModal} style={[ gloStyles.gloShadow, { alignItems: 'center', backgroundColor:'#3867c7', borderRadius:100, position:'relative', top:-30,}]} >
+                <Icon name="add" size={65} color={'#fff'} style={{ paddingLeft:5, }}/> 
+              </TouchableOpacity>
+              {/* The plus icon is off-centered for some reason. */}
+              <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={{ flex: 1, alignItems: 'center' }}>
+                <Icon name="settings-sharp" size={30} color={state.index === 3 ? '#fff' : '#b3b3b3'} />
               </TouchableOpacity>
             </View>
           </View>
         )}
       >
-        <Tab.Screen 
-          name="Phrases" 
-          component={PhrasesScreen} 
-          options={{
-            headerStyle: {
-              backgroundColor: '#47a81a', 
-              borderWidth:0,
-            },
-            headerTitleStyle: {
-              display: 'none', // Hide header title
-            },
-          }}
-        />
+        <Tab.Screen name="Phrases" component={PhrasesScreen} />
         <Tab.Screen name="FlashCards" component={FlashCardScreen} />
-        <Tab.Screen name="SettingsStack" component={SettingsStackNavigator} />
+        <Tab.Screen name="Settings" component={FlashCardScreen} />
       </Tab.Navigator>
+
+      {/* Modal */}
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={toggleModal}
+      >
+        {/* Your Modal content */}
+        <View style={styles.modalContainer}>
+          <Text>This is a modal</Text>
+          {/* Add your modal content here */}
+          <TouchableOpacity onPress={toggleModal}>
+            <Text>Close Modal</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   menuBarContainer:{
     // flexDirection: 'row', 
-    justifyContent:'flex-start',
+    justifyContent:'center',
     alignItems:'center',
     backgroundColor:'transparent',
-    height:0,
-    
+    height:140,
   },
   menuBarStyle:{
     flexDirection: 'row', 
     justifyContent: 'space-around', 
-    alignItems:'center',
     backgroundColor:'#47a81a', 
     height:80, 
     width:300,
-    // marginBottom:80,
-    width:'90%',
+    alignItems:'center',
+    // marginBottom:10,
+    // width:'90%',
     borderRadius:10,
-    position:'absolute',
-    bottom:50,
   }
 });
 

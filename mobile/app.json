@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Lango",
+    "name": "Lango Phrases",
     "slug": "lango",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,13 +16,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.theezedev.lango"
+      "bundleIdentifier": "com.theezedev.lango",
+      "buildNumber": "1.0.2"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.theezedev.lango"
     },
     "web": {
       "favicon": "./assets/favicon.png"

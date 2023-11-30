@@ -4,6 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 
+import { StatusBar } from 'expo-status-bar';
+
+
 import AppContext from '../AppContext';
 import AppLanguages from '../AppLanguages';
 import DropDownSelection from '../components/DropdownSelection';
@@ -59,12 +62,12 @@ const SetupScreen = ({ updateDataExistsState }) => {
     };
 
     return (
-        <View style={{flex:1, }}>
+        <View style={[{flex:1, backgroundColor:'#fcfcff'}]}>
             <View style={{ flex:1,padding:'3%',}}>
-                <View style={{flex:0, backgroundColor:'transparent', justifyContent:'center', alignItems:'center'}}>
+                <View style={{flex:0, backgroundColor:'transparent', justifyContent:'center', alignItems:'center', backgroundColor:'transparent'}}>
                     <Image
-                        style={{width:300,height:300,}}
-                        source={require('../assets/icon.png')}
+                        style={{width:300,height:200,}}
+                        source={require('../assets/icon-trans-trim.png')}
                         resizeMode="contain"
                     />
                 </View>
@@ -114,6 +117,7 @@ const SetupScreen = ({ updateDataExistsState }) => {
                 style={styles.backgroundImage}
                 resizeMode="cover"
             />
+            <StatusBar style="dark" />
         </View>
     );
 };
@@ -154,6 +158,7 @@ const SetupScreen = ({ updateDataExistsState }) => {
             right: 0,
             height: 200, // Set the desired height
             zIndex: -1000,
+            borderWidth:0,
         },
 
     });

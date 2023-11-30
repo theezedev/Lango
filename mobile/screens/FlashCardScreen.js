@@ -104,7 +104,7 @@ const FlashCardScreen = () => {
           <Text>{t('AddSome')}</Text>
         </View>
       ) : (
-      <View style={styles.container}>
+      <View style={{ alignItems:'center', justifyContent:'center', flexDirection:'column',}}>
         <TouchableOpacity style={{width:'100%',alignItems:'center', justifyContent:'center',}} onPress={() => (spin.value = spin.value ? 0 : 1)}>
           <Animated.View style={[styles.front, rStyle]}>
               <Text style={{fontSize:20}}>{currentPhrase?.originalPhrase}</Text>
@@ -112,10 +112,10 @@ const FlashCardScreen = () => {
           <Animated.View style={[styles.back, bStyle]}>
               <Text style={{fontSize:20}}>{currentPhrase?.translatedPhrase}</Text>
           </Animated.View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleNextPhrase} style={styles.nextButton}>
-          <Text style={styles.buttonText}>{t('Next Phrase')}</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleNextPhrase} style={[styles.nextButton, phrasesData.length <= 1 && styles.disabledButton]} disabled={phrasesData.length <= 1}>
+            <Text style={styles.buttonText}>{t('Next Phrase')}</Text>
+          </TouchableOpacity>
       </View>
       )}
     </View>
@@ -126,12 +126,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
   },
   front: {
     height: '65%',
-    width: '90%',
+    width: '80%',
     backgroundColor: "#FFFDD0",
     borderRadius: 16,
     position: "absolute",
@@ -141,26 +140,30 @@ const styles = StyleSheet.create({
     borderColor:'#1c4568',
  },
   back: {
-      height: '65%',
-      width: '90%',
-      backgroundColor: "#FFFDD0",
-      borderRadius: 16,
-      backfaceVisibility: "hidden",
-      alignItems: "center",
-      justifyContent: "center",
-      borderWidth:3,
-      borderColor:'#1c4568',
+    height: '65%',
+    width: '80%',
+    backgroundColor: "#FFFDD0",
+    borderRadius: 16,
+    backfaceVisibility: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth:3,
+    borderColor:'#1c4568',
   },
   nextButton: {
-    marginTop: 20,
+    // marginTop: 40,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#47a81a',
+    backgroundColor: '#1c4568',
     borderRadius: 5,
   },
   buttonText: {
     fontSize: 18,
     color: '#fff',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc', 
+    opacity: 0.6,
   },
 });
 

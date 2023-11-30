@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, FlatList, Text, Modal, TextInput, TouchableOpacity, Button, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, FlatList, Text, Modal, TextInput, TouchableOpacity, Image, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import DropDownSelection from '../components/DropdownSelection';
-import { ScrollView, Swipeable } from 'react-native-gesture-handler';
+import { ScrollView, Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Constants from 'expo-constants';
 
 
 import AppContext from '../AppContext';
@@ -101,7 +103,7 @@ const PhrasesScreen = ({ }) => {
           fetchData();
         }, [selectedLanguage]) // Add dependencies to watch for changes
     );
-      
+    
 
     const filteredPhrases = phrasesData.filter(
         phrase =>
@@ -136,26 +138,26 @@ const PhrasesScreen = ({ }) => {
         };
     
         return (
-        <Swipeable
-            renderRightActions={(progress, dragX) =>
-            renderRightActions(progress, dragX, onClick)
-            }
-            onSwipeableOpen={() => closeRow(index)}
-            ref={(ref) => (row[index] = ref)}
-            rightOpenValue={-100}
-        >
-            <TouchableOpacity onPress={() => handlePhrasePress(item)}>
-                <View style={styles.phraseContainer}>
-                    <Text style={styles.originalPhrase}>
-                        {item.isFavorite === true ? (
-                    <Icon name="star" size={15} fill={'red'} color={'gold'} style={{marginRight:5}} />
-                        ) : null} 
-                    {item.originalPhrase}
-                    </Text>
-                    <Text style={styles.translatedPhrase}>{item.translatedPhrase}</Text>
-                </View>
-            </TouchableOpacity>
-        </Swipeable>
+            <Swipeable
+                renderRightActions={(progress, dragX) =>
+                renderRightActions(progress, dragX, onClick)
+                }
+                onSwipeableOpen={() => closeRow(index)}
+                ref={(ref) => (row[index] = ref)}
+                rightOpenValue={-100}
+            >
+                <TouchableOpacity onPress={() => handlePhrasePress(item)}>
+                    <View style={styles.phraseContainer}>
+                        <Text style={styles.originalPhrase}>
+                            {item.isFavorite === true ? (
+                        <Icon name="star" size={15} fill={'red'} color={'gold'} style={{marginRight:5}} />
+                            ) : null} 
+                        {item.originalPhrase}
+                        </Text>
+                        <Text style={styles.translatedPhrase}>{item.translatedPhrase}</Text>
+                    </View>
+                </TouchableOpacity>
+            </Swipeable>
         );
     };
 
@@ -190,7 +192,7 @@ const PhrasesScreen = ({ }) => {
         setOriginalPhrase('')
         setTranslatedPhrase('')
         setPhraseID('')
-        setSelectedCategory('')
+        setSelectedCategory(categories.find(cat => cat.label === t('Other'))?.value)
         
         setIsFavorite(false)
         setIsNew(true);
@@ -342,100 +344,94 @@ const PhrasesScreen = ({ }) => {
           console.error('Error deleting phrase:', error);
         }
     };
+    
       
     return (
-        <View style={{flex:1, padding:'3%',}}>
-            <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center',}}>
-                <View style={{ flex:1}}>
-                    {/* <DropDownSelection
-                        selectedValue={'Favorites'}
-                        label="Select a vategory"
-                        options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
-                        labelVisible={false}
-                        onChange={(text) => setSelectedCategory(text)}
-                        style={{borderRadius: 8, borderWidth: 1, borderColor: '#ccc', backgroundColor: '#ffffff',}}       
-                        containerStyle={{ alignItems:'center', flexDirection:'column', justifyContent:'center', }}
-                    /> */}
+        <GestureHandlerRootView style={{flex:1, backgroundColor:'#fff'}}>
+            <SafeAreaView style={{flex:1,backgroundColor:'#47a81a', paddingBottom:-100 }}>
+                <View style={{flex:1, backgroundColor:'#fff'}}>
+                    <View style={[styles.topBar, ]}>
+                        <View style={styles.inputGroup}>
+                            <Icon name="search" size={25} color={'#fff'} />
+                            <TextInput
+                                style={styles.inputSearch}
+                                placeholder="Search..."
+                                placeholderTextColor={'#fff'}
+                                onChangeText={text => setSearchText(text)}
+                                value={searchText}
+                            />
+                        </View>
+                    </View>
+                    <View style={{ paddingHorizontal:'3%',}}>  
+                        <FlatList
+                            data={filteredPhrases}
+                            renderItem={renderPhrase}
+                            keyExtractor={(item, index) => `${item.originalPhrase}-${index}`}
+                            keyboardType="visible-password"
+                            contentContainerStyle={{ paddingBottom: 350,paddingTop:20,}}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
+                    <View style={{position:'absolute', bottom:150, right:'5%', zIndex:1000}}>
+                        <TouchableOpacity style={[gloStyles.btnPrimary, styles.buttonAdd, gloStyles.gloShadow]} onPress={handleAddPress}>
+                            <Icon name="add" size={40} color={'#fff'} />
+                        </TouchableOpacity>
+                    </View> 
                 </View>
                 
-                <TouchableOpacity style={[gloStyles.btnPrimary, {flexDirection:'row', minWidth:90, margin:10,}]} onPress={handleAddPress}>
-                    <Icon name="add" size={20} color={'#fff'} />
-                    <Text style={{fontSize:15,color:'#fff',padding:5,}}>{t('Add')}</Text>
-                </TouchableOpacity>
-            </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Search..."
-                onChangeText={text => setSearchText(text)}
-                value={searchText}
-            />
-            <FlatList
-                data={filteredPhrases}
-                renderItem={renderPhrase}
-                keyExtractor={(item, index) => `${item.originalPhrase}-${index}`}
-                style={{flex:0}}
-                keyboardType="visible-password"
-            />
-
-            <Modal visible={modalVisible} transparent animationType="slide">
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                        <View style={{backgroundColor: '#fff', padding: 20, borderRadius: 10, height:'90%', width:'90%',  flexDirection:'column', justifyContent:'space-between', }}>
-                            <View style={{}}>
-                                <View style={{justifyContent:'space-between', flexDirection:'row', marginBottom:10,}}>
-                                    <View>
-                                        {/* {!isNew && (
-                                            <TouchableOpacity onPress={() => deletePhrase()}>
-                                                <Icon name="trash" size={30} color={'red'} />
-                                            </TouchableOpacity>
-                                        )} */}
-                                    </View>
-                                    
+                <Modal visible={modalVisible} transparent animationType="slide">
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                            <View style={{backgroundColor: '#fff', padding: 20, borderRadius: 10, height:'80%', width:'90%',  flexDirection:'column', justifyContent:'space-between', }}>
+                                <View style={{flexDirection:'row-reverse', marginBottom:10,}}>
                                     <TouchableOpacity onPress={closeModal}>
                                         <Icon name="close" size={30} color={'#47a81a'} />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={{flexDirection:'column',justifyContent:'space-between'}}>
-                                    <View style={{marginBottom:10, backgroundColor:'transparent', marginTop:15, zIndex: 10001, paddingHorizontal:10, flexDirection:'row',}}>
-                                        <View style={{flex:1, marginRight:10,}}>
-                                            <Text style={[styles.label, {marginBottom:10,}]}>{t('Category')}:</Text>
-                                            <DropDownSelection
-                                                selectedValue={categories.find(cat => cat.label === t('Other'))?.value}
-                                                label="Select a category"
-                                                options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
-                                                labelVisible={false}
-                                                onChange={(text) => setSelectedCategory(text)}
-                                                containerStyle={{ }}                                     
-                                            />
+                                <ScrollView>
+                                    <View style={{flexDirection:'column',justifyContent:'space-between'}}>
+                                        <View style={{marginBottom:10, backgroundColor:'transparent', marginTop:15, zIndex: 10001, paddingHorizontal:10, flexDirection:'row',}}>
+                                            <View style={{flex:1, marginRight:10,}}>
+                                                <Text style={[styles.label, {marginBottom:10, marginLeft:-10}]}>{t('Category')}:</Text>
+                                                <DropDownSelection
+                                                    selectedValue={selectedCategory}
+                                                    label="Select a category"
+                                                    options={categories.map((cat) => ({ label: cat.label , value: cat.value }))}
+                                                    labelVisible={false}
+                                                    onChange={(text) => setSelectedCategory(text)}
+                                                    containerStyle={{ }}                                     
+                                                />
+                                            </View>
+                                            <TouchableOpacity style={{flexDirection:'column-reverse', justifyContent:'center', alignItems: 'center', marginTop:10, }} onPress={() => {setIsFavorite(!isFavorite);}}>
+                                                <Icon name="star" size={25} fill={'red'} color={isFavorite ? 'gold' : 'grey'}/>
+                                            </TouchableOpacity>
                                         </View>
-                                        <TouchableOpacity style={{flexDirection:'column-reverse', justifyContent:'center', alignItems: 'center', marginTop:10, }} onPress={() => {setIsFavorite(!isFavorite);}}>
-                                            <Icon name="star" size={25} fill={'red'} color={isFavorite ? 'gold' : 'grey'}/>
-                                        </TouchableOpacity>
+                                        <View style={{marginBottom:10, backgroundColor:'transparent'}}>
+                                            <Text style={styles.label}>{t('Original')}:</Text>
+                                            <TextInput textAlignVertical="top" style={[styles.input,{height:100}]} multiline={true} numberOfLines={4} value={originalPhrase} onChangeText={(text) => setOriginalPhrase(text)} />
+                                        </View>
+                                        <View style={{marginBottom:10,}}>
+                                            <Text style={styles.label}>{t('Translation')}:</Text>
+                                            <TextInput textAlignVertical="top" style={[styles.input,{height:100,}]} multiline={true} numberOfLines={4} value={translatedPhrase} onChangeText={(text) => setTranslatedPhrase(text)} />
+                                        </View>
+                                        <View style={{marginBottom:10, minHeight:150,}}>
+                                            <Text style={styles.label}>{t('SuggestedTranslation')}:</Text>
+                                            <Text style={{marginLeft:10}}>{t('ComingSoon')}</Text>
+                                        </View>
                                     </View>
-                                    <View style={{marginBottom:10, backgroundColor:'transparent'}}>
-                                        <Text style={styles.label}>{t('Original')}:</Text>
-                                        <TextInput textAlignVertical="top" style={[styles.input,{height:100}]} multiline={true} numberOfLines={4} value={originalPhrase} onChangeText={(text) => setOriginalPhrase(text)} />
-                                    </View>
-                                    <View style={{marginBottom:10,}}>
-                                        <Text style={styles.label}>{t('Translation')}:</Text>
-                                        <TextInput textAlignVertical="top" style={[styles.input,{height:100,}]} multiline={true} numberOfLines={4} value={translatedPhrase} onChangeText={(text) => setTranslatedPhrase(text)} />
-                                    </View>
-                                    <ScrollView style={{marginBottom:10,}}>
-                                        <Text style={styles.label}>{t('SuggestedTranslation')}:</Text>
-                                        <Text style={{marginLeft:10}}>{t('ComingSoon')}</Text>
-                                    </ScrollView>
+                                </ScrollView>
+                                <View style={{borderWidth:0}}>
+                                    <TouchableOpacity onPress={handleSavePress} style={[gloStyles.btnPrimary,{flex:0}]}>
+                                        <Text style={gloStyles.txtWhite}>Save</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                            <View style={{borderWidth:0}}>
-                                <TouchableOpacity onPress={handleSavePress} style={[gloStyles.btnPrimary,{flex:0}]}>
-                                    <Text style={gloStyles.txtWhite}>Save</Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </SafeAreaView>
+        </GestureHandlerRootView>
+        
     );
 
     
@@ -459,6 +455,29 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#666666',
     },
+    topBar:{
+        backgroundColor:'#47a81a',
+        paddingVertical:4,
+    },
+    inputGroup:{
+        alignItems: 'center',
+        borderColor: '#ccc',
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        flexDirection:'row',
+        marginHorizontal:10,
+    },
+    inputSearch:{
+        height: 40,
+        fontSize: 16,
+        marginLeft:10,
+        color:'#fff',
+        padding:0,
+        margin:0,
+        // borderBottomWidth:1,
+        borderBottomColor:'#fff',
+        width:'100%',
+    },
     input: {
         height: 40,
         paddingHorizontal: 10,
@@ -470,22 +489,12 @@ const styles = StyleSheet.create({
         padding:5,
     },
     buttonAdd:{
-        flexDirection:'row',
-        borderRadius:5,
-        backgroundColor:'',
+        flexDirection:'row', padding:0 ,paddingLeft:3, minHeight:70, minWidth:70, borderRadius:100, backgroundColor:'#1c4568',
     },
-    // input: {
-    //     height: 40,
-    //     paddingHorizontal: 10,
-    //     borderRadius: 8,
-    //     borderWidth: 1,
-    //     borderColor: '#ccc',
-    //     backgroundColor: '#ffffff',
-    //     marginBottom: 10,
-    // },
+    
     label:{
         fontWeight:'bold',
-        marginBottom:2
+        marginBottom:2,
     },
 });
 

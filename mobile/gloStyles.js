@@ -53,12 +53,14 @@ module.exports = StyleSheet.create({
       justifyContent: 'center',
   },
   gloShadow: {
-      shadowColor: '#171717',
-      shadowOffset: {width: -2, height: 5},
-      shadowOpacity: 0.5,
-      shadowRadius: 5,
       elevation: 15,
-      style: { marginVertical: 5 }
+      shadowColor: '#000',
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
   },
   selectedButton:{
       backgroundColor:'#43464b',

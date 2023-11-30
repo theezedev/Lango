@@ -101,7 +101,88 @@ export default function App() {
         <SafeAreaView style={gloStyles.mainContainer}>
           {isDataExists ? (
             selectedLanguage ? (
-              <MainNavScreen />
+              <Drawer.Navigator drawerContent={(props) => <SideMenu {...props} />} >
+                <Drawer.Screen
+                  name="MainNavScreen"
+                  component={MainNavScreen}
+                  options={({ navigation }) => ({
+                    title: '',
+                    headerStyle: {
+                      backgroundColor: '#47a81a',
+                      borderBottomWidth: 3,
+                      borderBottomColor: '#47a81a',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                    },
+                    // drawerIcon: <Icon size={23} name={'settings-sharp'}></Icon>
+
+                    headerLeft: () => (
+                      <Icon
+                        name={'settings-sharp'}
+                        size={24}
+                        color={'#fff'}
+                        style={{ margin:10}}
+                        onPress={() => {
+                          navigation.openDrawer();
+                        }}
+                
+                      />
+                    ),
+                    // headerRight: () => (
+                    //   <Icon
+                    //     name="language"
+                    //     size={24}
+                    //     color="white"
+                    //     style={{ marginRight: 16 }}
+                    //     onPress={() => {
+                    //       // Define your onPress action here
+                    //     }}
+                    //   />
+                    // ),
+                  })}
+                  initialParams={{ selectedLanguage }}
+                />
+                <Drawer.Screen
+                  name="SettingsStackScreen"
+                  component={SettingsStackNavigator}
+                  options={({ navigation }) => ({
+                    title: '',
+                    headerStyle: {
+                      backgroundColor: '#47a81a',
+                      borderBottomWidth: 3,
+                      borderBottomColor: '#47a81a',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontWeight: 'bold',
+                    },
+                    headerLeft: () => (
+                      <Icon
+                        name={'md-menu'}
+                        size={24}
+                        style={{ marginLeft: 10 }}
+                        onPress={() =>
+                          navigation.dispatch(DrawerActions.toggleDrawer())
+                        }
+                      />
+                    ),
+                    // headerRight: () => (
+                    //   <Icon
+                    //     name="language"
+                    //     size={24}
+                    //     color="white"
+                    //     style={{ marginRight: 16 }}
+                    //     onPress={() => {
+                    //       // Define your onPress action here
+                    //     }}
+                    //   />
+                    // ),
+                  })}
+                  initialParams={{ selectedLanguage }}
+                />
+              </Drawer.Navigator>
             ) : (
               <View style={{flex:1, justifyContent:'center', alignItems:'center',}}>
                 <ActivityIndicator size="large" color={'#47a81a'}/>

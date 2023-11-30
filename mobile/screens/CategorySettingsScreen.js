@@ -191,7 +191,7 @@ const CategorySettingsScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={{ flex: 1, padding: 20, backgroundColor:'#fff' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
         <TextInput
           style={[gloStyles.formControl, {flex:1, height:50}]}
@@ -199,7 +199,7 @@ const CategorySettingsScreen = () => {
           onChangeText={(text) => setCategoryToAdd(text)}
           value={categoryToAdd}
         />
-        <TouchableOpacity style={[gloStyles.btnPrimary, {flexDirection:'row', minWidth:90, margin:10,}]} onPress={addCategory}>
+        <TouchableOpacity style={[gloStyles.btnPrimary, {backgroundColor:'#1c4568', flexDirection:'row', minWidth:90, marginLeft:10,}]} onPress={addCategory}>
           <Icon name="add" size={20} color={'#fff'} />
           <Text style={{fontSize:15,color:'#fff',padding:5,}}>{t('Add')}</Text>
         </TouchableOpacity>
